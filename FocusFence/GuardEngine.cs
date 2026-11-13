@@ -48,7 +48,7 @@ namespace FocusFence
         internal DateTime PauseUntil = DateTime.MinValue;
         internal GameProfile Profile;
         internal WindowInfo Pip;
-        internal string Status = "Schutz aus · Maus frei";
+        internal string Status = "Protection off · Mouse released";
         internal string Error = "";
         internal RectI CurrentBounds;
         internal double SessionSeconds;
@@ -72,10 +72,10 @@ namespace FocusFence
             if (watch)
             {
                 // One small companion waits for process exit and restores only the resources we own.
-                var info = new ProcessStartInfo(Application.ExecutablePath, "--watch " + ownPid + " \"" + recoveryPath + "\"");
+                var info = new ProcessStartInfo(App.ExecutablePath, "--watch " + ownPid + " \"" + recoveryPath + "\"");
                 info.UseShellExecute = false; info.CreateNoWindow = true; info.WindowStyle = ProcessWindowStyle.Hidden;
                 try { Process.Start(info); }
-                catch (Exception e) { Error = "Wiederherstellungsdienst nicht gestartet: " + e.Message; Storage.Log(Error); }
+                catch (Exception e) { Error = "Recovery companion could not start: " + e.Message; Storage.Log(Error); }
                 eventProc = delegate { Tick(); };
                 eventHook = Native.SetWinEventHook(3, 3, IntPtr.Zero, eventProc, 0, 0, 0);
             }
@@ -85,11 +85,11 @@ namespace FocusFence
             Armed = !Armed; PauseUntil = DateTime.MinValue;
             if (Armed) { SessionSeconds = 0; Error = ""; }
             Tick(); Signal();
-            Storage.Log(Armed ? "Schutz aktiviert" : "Schutz deaktiviert");
+            Storage.Log(Armed ? "Protection enabled" : "Protection disabled");
         }
         internal void Stop()
         {
-            Armed = false; PauseUntil = DateTime.MinValue; Release(); Status = Locked || recovery.PipHandle != 0 ? "Freigabe unvollständig · " + Error : "Schutz aus · Maus frei"; Signal();
+            Armed = false; PauseUntil = DateTime.MinValue; Release(); Status = Locked || recovery.PipHandle != 0 ? "Release incomplete · " + Error : "Protection off · Mouse released"; Signal();
         }
         internal void Pause()
         {
@@ -116,35 +116,35 @@ namespace FocusFence
                 if ((Pip != null && fg == Pip.Handle) || !GuardPolicy.ShouldLock(Armed, now, PauseUntil, Profile, lastDescription, ownPid))
                 {
                     Release();
-                    if (Locked || recovery.PipHandle != 0) { Status = "Freigabe unvollständig · " + Error; return; }
-                    Status = !Armed ? "Schutz aus · Maus frei" : now < PauseUntil ? "Pause · " + Math.Ceiling((PauseUntil - now).TotalSeconds) + " s" : Profile == null ? "Warte auf ein Spiel" : "Warte auf " + Profile.Name;
+                    if (Locked || recovery.PipHandle != 0) { Status = "Release incomplete · " + Error; return; }
+                    Status = !Armed ? "Protection off · Mouse released" : now < PauseUntil ? "Pause · " + Math.Ceiling((PauseUntil - now).TotalSeconds) + " s" : Profile == null ? "Waiting for a game" : "Waiting for " + Profile.Name;
                     return;
                 }
                 RectI client, bounds;
-                if (!Native.ClientBounds(fg, out client)) { Release(); Status = "Spielfenster nicht verfügbar"; return; }
+                if (!Native.ClientBounds(fg, out client)) { Release(); Status = "Game window is not available"; return; }
                 Screen monitor = Screen.FromHandle(fg);
                 if (Profile.Area == "monitor" && !string.IsNullOrEmpty(Profile.Monitor))
                 {
                     bool found = false;
                     foreach (var screen in Screen.AllScreens) if (screen.DeviceName == Profile.Monitor) { monitor = screen; found = true; break; }
-                    if (!found) { Release(); Status = "Gewählter Monitor ist nicht angeschlossen"; return; }
+                    if (!found) { Release(); Status = "The selected monitor is disconnected"; return; }
                 }
                 var m = monitor.Bounds;
                 if (!GuardPolicy.Bounds(client, new RectI(m.Left, m.Top, m.Right, m.Bottom), Profile, out bounds))
-                { Release(); Status = "Sperrbereich zu klein oder außerhalb des Monitors"; return; }
+                { Release(); Status = "Confinement area is too small or outside the monitor"; return; }
                 if (!Locked || !bounds.Equals(CurrentBounds))
                 {
                     // Persist before the mutation, so a crash cannot leave an unrecorded clip behind.
                     recovery.Clipped = true; recovery.Bounds = bounds; Persist();
                 }
-                if (!cursor.Set(ref bounds)) throw new InvalidOperationException("Windows hat die Maussperre abgelehnt.");
+                if (!cursor.Set(ref bounds)) throw new InvalidOperationException("Windows denied cursor confinement.");
                 CurrentBounds = bounds; Locked = true;
                 if (Profile.PipClickThrough && Pip != null && Pip.Handle != fg) ApplyPip(); else RestorePip();
-                Status = "Geschützt · " + Profile.Name;
+                Status = "Protected · " + Profile.Name;
             }
             catch (Exception e)
             {
-                Error = e.Message; Armed = false; Release(); Status = "Schutz gestoppt · " + Error; Storage.Log(Status); Signal();
+                Error = e.Message; Armed = false; Release(); Status = "Protection stopped · " + Error; Storage.Log(Status); Signal();
             }
         }
         private void ApplyPip()
@@ -158,14 +158,14 @@ namespace FocusFence
             recovery.PipStartTicks = Process.GetProcessById(Pip.ProcessId).StartTime.ToUniversalTime().Ticks;
             recovery.AddedStyles = added; Persist();
             if (!Native.SetStyle(Pip.Handle, style | Native.Transparent | Native.Layered))
-                throw new InvalidOperationException("Bild-in-Bild-Fenster erlaubt keinen Klickschutz. Prüfe, ob es als Administrator läuft.");
+                throw new InvalidOperationException("This PiP window denied click-through. Check whether it is running as administrator.");
             if ((added & Native.Layered) != 0 && !Native.SetLayeredWindowAttributes(Pip.Handle, 0, 255, 2))
-                throw new InvalidOperationException("Bild-in-Bild-Klickschutz konnte nicht gesetzt werden.");
+                throw new InvalidOperationException("Could not enable PiP click-through.");
         }
         private void RestorePip()
         {
             if (recovery.PipHandle == 0) return;
-            if (!RestoreStyles(recovery)) throw new InvalidOperationException("Bild-in-Bild konnte nicht freigegeben werden. Bitte das Videofenster schließen.");
+            if (!RestoreStyles(recovery)) throw new InvalidOperationException("Could not release the PiP window. Please close the video window.");
             recovery.PipHandle = 0; recovery.AddedStyles = 0; Persist();
         }
         internal static bool RestoreStyles(RecoveryState r)
@@ -185,13 +185,13 @@ namespace FocusFence
                 // Do not overwrite another app's more recent cursor clip.
                 bool read = cursor.Read(out actual);
                 bool released = read && (!actual.Equals(recovery.Bounds) || cursor.Release());
-                if (!released) Error = "Windows konnte die Maus nicht freigeben.";
+                if (!released) Error = "Windows could not release the cursor.";
                 else { recovery.Clipped = false; Locked = false; }
             }
             try { RestorePip(); }
             catch (Exception e) { Error = e.Message; Storage.Log(Error); }
             try { Persist(); }
-            catch (Exception e) { Error = "Wiederherstellungsdatei konnte nicht aktualisiert werden: " + e.Message; Storage.Log(Error); }
+            catch (Exception e) { Error = "Could not update the recovery file: " + e.Message; Storage.Log(Error); }
         }
         private void Persist()
         {
@@ -213,10 +213,10 @@ namespace FocusFence
                 if (state.Clipped && Native.GetClipCursor(out actual)) cursorRestored = !actual.Equals(state.Bounds) || Native.ReleaseCursor(IntPtr.Zero);
                 bool restored = RestoreStyles(state) && cursorRestored;
                 if (restored) File.Delete(path);
-                Storage.Log("Wiederherstellung nach Programmende: " + (restored ? "erfolgreich" : "PiP-Fenster schließen"));
+                Storage.Log("Recovery after process exit: " + (restored ? "successful" : "close the PiP window"));
                 return restored ? 0 : 1;
             }
-            catch (Exception e) { Storage.Log("Wiederherstellung: " + e.Message); return 1; }
+            catch (Exception e) { Storage.Log("Recovery: " + e.Message); return 1; }
         }
         public void Dispose()
         {

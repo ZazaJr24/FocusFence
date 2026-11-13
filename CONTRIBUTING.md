@@ -2,7 +2,7 @@
 
 Bug reports and focused pull requests are welcome.
 
-Build on Windows with .NET Framework 4.8:
+Build on Windows with the stable .NET 10 SDK:
 
 ```powershell
 .\build.ps1 -CoreTest
@@ -18,4 +18,4 @@ These checks use hidden test windows and a substituted cursor backend for state 
 
 For PiP fixes, include browser/version, Windows version, expected behavior and reproduction steps. Remove personal information from screenshots and logs. Changes to detection should cover both the intended PiP window and similar normal windows that must not be selected.
 
-The app is currently in German. Localization contributions are welcome.
+The app interface, tray controls and app-owned dialogs are in English. Browser-window detection intentionally retains localized PiP titles. User profile names and process/window titles should never be translated.

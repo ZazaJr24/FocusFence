@@ -2,23 +2,36 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Globalization;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Threading;
 using System.Windows;
 using System.Windows.Markup;
 
 [assembly: AssemblyTitle("FocusFence")]
-[assembly: AssemblyDescription("Maus- und Bild-in-Bild-Schutz beim Spielen")]
+[assembly: AssemblyDescription("Mouse confinement and Picture-in-Picture protection for games")]
 [assembly: AssemblyCompany("FocusFence")]
-[assembly: AssemblyVersion("1.2.0.0")]
-[assembly: AssemblyFileVersion("1.2.0.0")]
+[assembly: AssemblyVersion("2.0.0.0")]
+[assembly: AssemblyFileVersion("2.0.0.0")]
+[assembly: SupportedOSPlatform("windows10.0.17763")]
 
 namespace FocusFence
 {
     internal static class App
     {
+        internal static string ExecutablePath { get { return Environment.ProcessPath ?? throw new InvalidOperationException("The application executable path is unavailable."); } }
         [STAThread]
         private static int Main(string[] args)
         {
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("en-US");
+            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+            System.Windows.Forms.Application.SetHighDpiMode(System.Windows.Forms.HighDpiMode.PerMonitorV2);
+            if (args.Length == 2 && args[0] == "--runtime-info")
+            {
+                File.WriteAllLines(args[1], new[] { RuntimeInformation.FrameworkDescription, typeof(App).Assembly.GetCustomAttribute<TargetFrameworkAttribute>().FrameworkName, RuntimeInformation.ProcessArchitecture.ToString(), "Self-contained executable: " + ExecutablePath });
+                return 0;
+            }
             if (args.Length == 2 && args[0] == "--test-host") return SelfTests.TestHost(args[1]);
             if (args.Length == 2 && args[0] == "--smoke") return SelfTests.Smoke(args[1]);
             if (args.Length == 2 && args[0] == "--core-test") return SelfTests.RunCore(args[1]);
@@ -34,7 +47,7 @@ namespace FocusFence
             bool first;
             using (var mutex = new Mutex(true, "Local\\FocusFence.Desktop.v1", out first))
             {
-                if (!first) { MessageBox.Show("FocusFence läuft bereits. Öffne die App über das Symbol im Infobereich.", "FocusFence"); return 0; }
+                if (!first) { MessageBox.Show("FocusFence is already running. Open it from the system tray.", "FocusFence"); return 0; }
                 MainController controller = null;
                 try
                 {
@@ -43,14 +56,14 @@ namespace FocusFence
                     {
                         if (controller != null) controller.EmergencyStop();
                         Storage.Log(e.Exception.ToString());
-                        MessageBox.Show("FocusFence hat den Schutz gestoppt.\n\n" + e.Exception.Message, "FocusFence");
+                        MessageBox.Show("FocusFence has stopped protection.\n\n" + e.Exception.Message, "FocusFence");
                         e.Handled = true;
                     };
                     controller = new MainController(LoadWindow(), false);
                     application.Run();
                     return 0;
                 }
-                catch (Exception e) { Storage.Log(e.ToString()); MessageBox.Show(e.Message, "FocusFence konnte nicht starten"); return 1; }
+                catch (Exception e) { Storage.Log(e.ToString()); MessageBox.Show(e.Message, "FocusFence could not start"); return 1; }
                 finally { if (controller != null) controller.Dispose(); }
             }
         }

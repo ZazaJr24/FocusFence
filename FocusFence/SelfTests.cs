@@ -159,16 +159,16 @@ namespace FocusFence
             {
                 CoreTests(scratch);
                 string handles = Path.Combine(scratch, "handles.txt");
-                host = Process.Start(new ProcessStartInfo(Forms.Application.ExecutablePath, "--test-host \"" + handles + "\"") { UseShellExecute = false, CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden });
+                host = Process.Start(new ProcessStartInfo(App.ExecutablePath, "--test-host \"" + handles + "\"") { UseShellExecute = false, CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden });
                 Assert(Wait(delegate { return File.Exists(handles) && File.ReadAllLines(handles).Length == 2; }, 6000), "Hidden native game and PiP test windows created");
                 var ids = File.ReadAllLines(handles); var game = Native.Describe(new IntPtr(long.Parse(ids[0]))); var pip = Native.Describe(new IntPtr(long.Parse(ids[1])));
                 var application = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
                 var view = App.LoadWindow();
                 using (var controller = new MainController(view, true))
                 {
-                    view.Width = 800; view.Height = 700;
+                    view.Width = view.MinWidth; view.Height = view.MinHeight;
                     view.ShowActivated = false; view.ShowInTaskbar = false; view.Left = -20000; view.Show(); view.UpdateLayout();
-                    Assert(view.ActualWidth >= 800 && view.ActualHeight >= 700, "WPF view loads and lays out at minimum dimensions");
+                    Assert(Math.Abs(view.ActualWidth - view.MinWidth) < 1 && Math.Abs(view.ActualHeight - view.MinHeight) < 1, "WPF view loads and lays out at minimum dimensions");
                     foreach (var page in new[] { "Profiles", "Settings", "Help", "Overview" })
                     {
                         ((Button)view.FindName("Nav" + page)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -176,22 +176,23 @@ namespace FocusFence
                     }
                     Assert(!((Button)view.FindName("PauseButton")).IsEnabled, "Pause unavailable while disarmed");
                     view.UpdateLayout();
-                    Assert(((ScrollViewer)view.FindName("PageScroll")).ScrollableHeight < 1, "Overview fits minimum window size without scrolling");
+                    var pageScroll = (ScrollViewer)view.FindName("PageScroll");
+                    Assert(pageScroll.ScrollableHeight < 1, "Overview fits minimum window size without scrolling (overflow: " + pageScroll.ScrollableHeight + ")");
                     var firstVideo = PipFixture(9001, "Picture in picture", "chrome");
                     controller.ApplyDiscovery(new List<WindowInfo> { firstVideo });
-                    Assert(((TextBlock)view.FindName("PipWindowTitle")).Text.Contains("automatisch erkannt"), "Controller automatically selects detected PiP without user interaction");
+                    Assert(((TextBlock)view.FindName("PipWindowTitle")).Text.Contains("auto-detected"), "Controller automatically selects detected PiP without user interaction");
                     controller.ApplyDiscovery(new List<WindowInfo>());
-                    Assert(((TextBlock)view.FindName("PipWindowTitle")).Text == "Warte auf dein Video", "Controller returns to waiting state after PiP closes");
+                    Assert(((TextBlock)view.FindName("PipWindowTitle")).Text == "Waiting for a PiP window", "Controller returns to waiting state after PiP closes");
                     controller.ApplyDiscovery(new List<WindowInfo> { PipFixture(9002, "Bild-im-Bild", "msedge") });
                     Assert(((TextBlock)view.FindName("PipWindowTitle")).Text.StartsWith("Edge"), "Controller reacquires PiP after browser restart");
                     var manualVideo = PipFixture(9003, "Picture-in-Picture", "firefox");
                     var manualPicker = (ComboBox)view.FindName("PipWindows"); manualPicker.ItemsSource = new[] { manualVideo }; manualPicker.SelectedIndex = 0;
                     controller.ApplyDiscovery(new List<WindowInfo> { firstVideo, manualVideo });
-                    Assert(((TextBlock)view.FindName("PipWindowTitle")).Text.Contains("manuell gewählt"), "Manual PiP selection is not overwritten by background detection");
+                    Assert(((TextBlock)view.FindName("PipWindowTitle")).Text.Contains("selected manually"), "Manual PiP selection is not overwritten by background detection");
                     ((Button)view.FindName("AutomaticPipButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-                    Assert(((TextBlock)view.FindName("PipWindowTitle")).Text.Contains("automatisch erkannt"), "Automatic discovery can be restored after manual selection");
+                    Assert(((TextBlock)view.FindName("PipWindowTitle")).Text.Contains("auto-detected"), "Automatic discovery can be restored after manual selection");
                     controller.ApplyDiscovery(new List<WindowInfo>()); controller.ApplyDiscovery(new List<WindowInfo> { firstVideo, manualVideo });
-                    Assert(((TextBlock)view.FindName("PipWindowTitle")).Text.Contains("2 Videofenster"), "Controller explains multiple-video ambiguity instead of silently choosing");
+                    Assert(((TextBlock)view.FindName("PipWindowTitle")).Text.Contains("2 video windows"), "Controller explains multiple-video ambiguity instead of silently choosing");
                     controller.ApplyDiscovery(new List<WindowInfo>());
                     var unlistedGame = new WindowInfo { Handle = new IntPtr(9010), ProcessId = 9977, ProcessName = "unlisted-game", Title = "Mein neues Spiel", Visible = true, Bounds = new RectI(0, 0, 640, 480) };
                     controller.ApplyDiscovery(new List<WindowInfo> { unlistedGame });
@@ -200,7 +201,7 @@ namespace FocusFence
                     Assert(((GameProfile)((ComboBox)view.FindName("EditProfiles")).SelectedItem).ProcessName == "unlisted-game", "Home game picker creates and selects a profile in one step");
                     ((Button)view.FindName("DeleteProfileButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     ((Button)view.FindName("ToggleGuardButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-                    Assert((string)((Button)view.FindName("ToggleGuardButton")).Content == "Ausschalten", "One-click protection can wait for automatic game detection without prior setup");
+                    Assert((string)((Button)view.FindName("ToggleGuardButton")).Content == "Disable protection", "One-click protection can wait for automatic game detection without prior setup");
                     ((Button)view.FindName("ToggleGuardButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     ((Button)view.FindName("NavProfiles")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     var games = (ComboBox)view.FindName("GameWindows"); games.ItemsSource = new[] { game }; games.SelectedIndex = 0;
@@ -255,7 +256,7 @@ namespace FocusFence
                 var nativeCursor = new WindowsCursorClip(); RectI existing;
                 Assert(nativeCursor.Read(out existing) && nativeCursor.Set(ref existing), "Win32 cursor API accepts unchanged existing confinement");
                 string ready = Path.Combine(scratch, "ready.txt");
-                crash = Process.Start(new ProcessStartInfo(Forms.Application.ExecutablePath, "--crash-worker \"" + handles + "\" \"" + ready + "\"") { UseShellExecute = false, CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden });
+                crash = Process.Start(new ProcessStartInfo(App.ExecutablePath, "--crash-worker \"" + handles + "\" \"" + ready + "\"") { UseShellExecute = false, CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden });
                 Assert(Wait(delegate { return File.Exists(ready) && new FileInfo(ready).Length > 0; }, 6000) && File.ReadAllText(ready) == "locked", "Crash worker establishes protected test state");
                 crash.Kill(); crash.WaitForExit(3000);
                 Assert(Wait(delegate { return Native.GetStyle(pip.Handle) == originalStyle; }, 5000), "Watchdog restores real PiP after forced process termination");

@@ -1,73 +1,336 @@
-<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
- Title="FocusFence" Width="820" Height="700" MinWidth="800" MinHeight="680" WindowStartupLocation="CenterScreen" Background="#1C1D20" Foreground="#EDEDF0" FontFamily="Segoe UI" FontSize="14" UseLayoutRounding="True" TextOptions.TextFormattingMode="Display" WindowStyle="None" ResizeMode="CanResize">
- <shell:WindowChrome.WindowChrome><shell:WindowChrome CaptionHeight="46" ResizeBorderThickness="6" CornerRadius="8" GlassFrameThickness="0"/></shell:WindowChrome.WindowChrome>
- <Window.Resources>
-  <Style TargetType="TextBlock"><Setter Property="TextWrapping" Value="Wrap"/></Style>
-  <Style x:Key="MutedText" TargetType="TextBlock"><Setter Property="Foreground" Value="#A0A3AD"/><Setter Property="FontSize" Value="13"/><Setter Property="LineHeight" Value="20"/></Style>
-  <Style x:Key="Label" TargetType="TextBlock"><Setter Property="FontSize" Value="13"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Margin" Value="0,0,0,8"/></Style>
-  <Style x:Key="Rule" TargetType="Border"><Setter Property="Height" Value="1"/><Setter Property="Background" Value="#34363D"/><Setter Property="Margin" Value="0,24"/></Style>
-  <Style TargetType="Button">
-   <Setter Property="Foreground" Value="#D7D9E0"/><Setter Property="Background" Value="#282A30"/><Setter Property="BorderBrush" Value="#41434D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Padding" Value="15,10"/><Setter Property="Cursor" Value="Hand"/><Setter Property="MinHeight" Value="42"/>
-   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button"><Border x:Name="B" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="B" Property="Opacity" Value="0.75"/></Trigger><Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="B" Property="BorderBrush" Value="#C7CCD9"/><Setter TargetName="B" Property="BorderThickness" Value="2"/></Trigger><Trigger Property="IsEnabled" Value="False"><Setter TargetName="B" Property="Opacity" Value="0.34"/></Trigger><Trigger Property="IsPressed" Value="True"><Setter TargetName="B" Property="Opacity" Value="0.55"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
-  </Style>
-  <Style x:Key="Primary" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"><Setter Property="Background" Value="#ECEDEF"/><Setter Property="Foreground" Value="#17181C"/><Setter Property="BorderBrush" Value="#ECEDEF"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
-  <Style x:Key="Quiet" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"><Setter Property="Background" Value="Transparent"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="Padding" Value="10,8"/><Setter Property="Foreground" Value="#B4B7C1"/></Style>
-  <Style x:Key="Nav" TargetType="Button" BasedOn="{StaticResource Quiet}"><Setter Property="Margin" Value="0,0,6,0"/><Setter Property="MinHeight" Value="35"/><Setter Property="Padding" Value="13,7"/><Setter Property="FontSize" Value="13"/></Style>
-  <Style TargetType="TextBox"><Setter Property="Background" Value="#24262B"/><Setter Property="Foreground" Value="#E2E4EA"/><Setter Property="BorderBrush" Value="#444751"/><Setter Property="CaretBrush" Value="#E2E4EA"/><Setter Property="Padding" Value="11,10"/><Setter Property="MinHeight" Value="42"/><Setter Property="SelectionBrush" Value="#515D75"/></Style>
-  <Style TargetType="ComboBox">
-   <Setter Property="Background" Value="#24262B"/><Setter Property="Foreground" Value="#E0E2E9"/><Setter Property="MinHeight" Value="45"/><Setter Property="Tag" Value="Auswählen …"/><Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ComboBox"><Grid><ToggleButton x:Name="Toggle" Focusable="False" IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" Background="{TemplateBinding Background}"><ToggleButton.Template><ControlTemplate TargetType="ToggleButton"><Border x:Name="Bg" Background="{TemplateBinding Background}" BorderBrush="#454853" BorderThickness="1" CornerRadius="6"><Path Data="M 0,0 L 4,4 8,0" Stroke="#B0B5C3" StrokeThickness="1.2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,15,0"/></Border><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Bg" Property="BorderBrush" Value="#7B8293"/></Trigger></ControlTemplate.Triggers></ControlTemplate></ToggleButton.Template></ToggleButton><TextBlock x:Name="EmptyHint" Text="{TemplateBinding Tag}" Margin="13,10,36,10" Foreground="#989DAA" IsHitTestVisible="False" Visibility="Collapsed" VerticalAlignment="Center"/><ContentPresenter Margin="13,10,36,10" VerticalAlignment="Center" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"/><Popup x:Name="PART_Popup" IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" AllowsTransparency="True" Focusable="False"><Border Background="#292B32" BorderBrush="#585E6B" BorderThickness="1" CornerRadius="6" MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}" MaxHeight="270"><ScrollViewer Margin="4" CanContentScroll="True"><ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/></ScrollViewer></Border></Popup></Grid><ControlTemplate.Triggers><Trigger Property="SelectedIndex" Value="-1"><Setter TargetName="EmptyHint" Property="Visibility" Value="Visible"/></Trigger><Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter TargetName="Toggle" Property="Background" Value="#343946"/></Trigger><Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.4"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
-  </Style>
-  <Style TargetType="ComboBoxItem"><Setter Property="Padding" Value="10"/><Setter Property="Foreground" Value="#E0E2E9"/><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ComboBoxItem"><Border x:Name="B" Background="Transparent" Padding="{TemplateBinding Padding}" CornerRadius="3"><ContentPresenter/></Border><ControlTemplate.Triggers><Trigger Property="IsHighlighted" Value="True"><Setter TargetName="B" Property="Background" Value="#3F4451"/></Trigger><Trigger Property="IsSelected" Value="True"><Setter TargetName="B" Property="Background" Value="#363C48"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter></Style>
-  <Style TargetType="CheckBox"><Setter Property="Foreground" Value="#D8DBE3"/><Setter Property="Margin" Value="0,8"/><Setter Property="MinHeight" Value="30"/><Setter Property="Cursor" Value="Hand"/><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="CheckBox"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition/></Grid.ColumnDefinitions><Border x:Name="Track" Width="34" Height="20" CornerRadius="10" Background="#484B55" HorizontalAlignment="Left"><Ellipse x:Name="Dot" Width="14" Height="14" Fill="#D8DAE1" HorizontalAlignment="Left" Margin="3"/></Border><ContentPresenter Grid.Column="1" VerticalAlignment="Center"/></Grid><ControlTemplate.Triggers><Trigger Property="IsChecked" Value="True"><Setter TargetName="Track" Property="Background" Value="#A9CEB6"/><Setter TargetName="Dot" Property="Fill" Value="#22352B"/><Setter TargetName="Dot" Property="HorizontalAlignment" Value="Right"/></Trigger><Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Track" Property="BorderBrush" Value="White"/><Setter TargetName="Track" Property="BorderThickness" Value="2"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter></Style>
-   <Style TargetType="ScrollBar"><Setter Property="Background" Value="#1C1D20"/><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ScrollBar"><Grid Background="#1C1D20" Width="9"><Track x:Name="PART_Track" IsDirectionReversed="True" Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}" Value="{TemplateBinding Value}" ViewportSize="{TemplateBinding ViewportSize}"><Track.DecreaseRepeatButton><RepeatButton Command="ScrollBar.PageUpCommand" Opacity="0" Focusable="False"/></Track.DecreaseRepeatButton><Track.Thumb><Thumb><Thumb.Template><ControlTemplate TargetType="Thumb"><Border Background="#535A69" CornerRadius="3" Margin="2"/></ControlTemplate></Thumb.Template></Thumb></Track.Thumb><Track.IncreaseRepeatButton><RepeatButton Command="ScrollBar.PageDownCommand" Opacity="0" Focusable="False"/></Track.IncreaseRepeatButton></Track></Grid></ControlTemplate></Setter.Value></Setter></Style></Window.Resources>
- <Border BorderBrush="#43464F" BorderThickness="1"><Grid>
-  <Grid.RowDefinitions><RowDefinition Height="46"/><RowDefinition Height="58"/><RowDefinition/><RowDefinition Height="51"/></Grid.RowDefinitions>
-  <Grid Margin="22,0,8,0"><StackPanel Orientation="Horizontal" VerticalAlignment="Center"><Viewbox Width="18" Height="18" Margin="0,0,10,0"><Canvas Width="24" Height="24"><Path Data="M 8,2 L 2,2 2,8 M 16,2 L 22,2 22,8 M 2,16 L 2,22 8,22 M 16,22 L 22,22 22,16" Stroke="#EDEDF0" StrokeThickness="1.6"/><Ellipse Width="4" Height="4" Fill="#EDEDF0" Canvas.Left="10" Canvas.Top="10"/></Canvas></Viewbox><TextBlock Text="FocusFence" FontWeight="SemiBold" FontSize="14"/></StackPanel><StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" shell:WindowChrome.IsHitTestVisibleInChrome="True"><Button x:Name="MinimizeButton" Content="—" Style="{StaticResource Quiet}" Width="38" MinHeight="32" Padding="0" AutomationProperties.Name="Minimieren"/><Button x:Name="MaximizeButton" Content="□" Style="{StaticResource Quiet}" Width="38" MinHeight="32" Padding="0" AutomationProperties.Name="Fenstergröße ändern"/><Button x:Name="CloseButton" Content="×" FontSize="21" Style="{StaticResource Quiet}" Width="38" MinHeight="32" Padding="0" AutomationProperties.Name="Schließen"/></StackPanel></Grid>
-  <Border Grid.Row="1" BorderBrush="#34363D" BorderThickness="0,0,0,1"><StackPanel Orientation="Horizontal" Margin="24,6,24,14" VerticalAlignment="Center"><Button x:Name="NavOverview" Content="Schutz" Style="{StaticResource Nav}"/><Button x:Name="NavProfiles" Content="Spielprofile" Style="{StaticResource Nav}"/><Button x:Name="NavSettings" Content="Einstellungen" Style="{StaticResource Nav}"/><Button x:Name="NavHelp" Content="Hilfe" Style="{StaticResource Nav}"/></StackPanel></Border>
-  <Grid Grid.Row="2" Margin="32,22,24,16"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition/></Grid.RowDefinitions>
-   <StackPanel Margin="0,0,0,22"><TextBlock x:Name="PageEyebrow" Visibility="Collapsed"/><TextBlock x:Name="PageTitle" Text="Mausschutz" FontSize="26" FontWeight="SemiBold"/><TextBlock x:Name="PageSubtitle" Text="Einschalten. Ins Spiel wechseln." Style="{StaticResource MutedText}" Margin="0,8,0,0"/></StackPanel>
-   <ScrollViewer x:Name="PageScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,10,0"><Grid>
-    <StackPanel x:Name="OverviewPage">
-     <Grid Margin="0,6,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel Margin="0,0,28,0"><StackPanel Orientation="Horizontal"><Ellipse x:Name="StatusDot" Width="6" Height="6" Fill="#747985" Margin="0,1,8,0"/><TextBlock x:Name="StatusBadge" Text="Ausgeschaltet" Foreground="#B0B5C2" FontSize="12"/></StackPanel><TextBlock x:Name="HeroTitle" Text="Maus frei." FontSize="26" FontWeight="SemiBold" Margin="0,10,0,8"/><TextBlock x:Name="HeroDescription" Style="{StaticResource MutedText}" Text="Ein Klick, dann kannst du weiterspielen." MaxWidth="430" HorizontalAlignment="Left"/></StackPanel><StackPanel Grid.Column="1" VerticalAlignment="Center"><Button x:Name="ToggleGuardButton" Content="Einschalten" Style="{StaticResource Primary}" MinWidth="145"/><Button x:Name="PauseButton" Content="30 s freigeben" Style="{StaticResource Quiet}" IsEnabled="False" Margin="0,3,0,0"/></StackPanel></Grid>
-     <Border Style="{StaticResource Rule}"/>
-     <Grid Margin="0,0,0,10"><TextBlock Text="Spiel" Style="{StaticResource Label}" Margin="0"/><TextBlock x:Name="GameDiscoveryHint" Text="Erkennt bekannte Spiele automatisch" Style="{StaticResource MutedText}" FontSize="11" HorizontalAlignment="Right"/></Grid>
-     <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><ComboBox x:Name="DashboardProfiles" Tag="Spiel auswählen oder ins Spiel wechseln" AutomationProperties.Name="Aktives Spielprofil"/><Button x:Name="GoProfilesButton" Content="Details" Style="{StaticResource Quiet}" Grid.Column="1" Margin="10,0,0,0"/></Grid>
-     <Grid Margin="0,11,0,0"><TextBlock Text="Maus begrenzen auf" Style="{StaticResource MutedText}" FontSize="12"/><TextBlock x:Name="BoundsText" Text="Spielfenster" Foreground="#BDC3CE" FontSize="12" HorizontalAlignment="Right"/></Grid>
-     <Border Style="{StaticResource Rule}"/>
-     <TextBlock Text="Bild-in-Bild" Style="{StaticResource Label}" Margin="0,0,0,14"/>
-     <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="30"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><Ellipse x:Name="PipDot" Width="6" Height="6" Fill="#62656E" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,7,0,0"/><StackPanel Grid.Column="1" Margin="0,0,14,0"><TextBlock x:Name="PipWindowTitle" Text="Warte auf dein Video" FontSize="15"/><TextBlock x:Name="PipHint" Text="Öffne ein Bild-in-Bild-Video im Browser." Style="{StaticResource MutedText}" FontSize="12" Margin="0,6,0,0"/></StackPanel><Button x:Name="PipOptionsButton" Content="Ändern" Grid.Column="2" Style="{StaticResource Quiet}" VerticalAlignment="Top" Padding="10,0" MinHeight="25"/></Grid>
-     <StackPanel x:Name="PipManualPanel" Visibility="Collapsed" Margin="30,16,0,0"><ComboBox x:Name="PipWindows" Tag="Videofenster manuell wählen" AutomationProperties.Name="Bild-in-Bild-Fenster"/><WrapPanel Margin="0,6,0,0"><Button x:Name="RefreshPipButton" Content="Fenster laden" Style="{StaticResource Quiet}" FontSize="12"/><Button x:Name="AutomaticPipButton" Content="Automatisch erkennen" Style="{StaticResource Quiet}" FontSize="12"/><Button x:Name="ClearPipButton" Content="Auswahl lösen" Style="{StaticResource Quiet}" FontSize="12"/></WrapPanel></StackPanel>
-     <StackPanel Visibility="Collapsed"><TextBlock x:Name="SessionText"/><TextBlock x:Name="BoundsSubtext"/><TextBlock x:Name="PipStatusText"/><TextBlock x:Name="ToggleHint"/></StackPanel>
-    </StackPanel>
-     <StackPanel x:Name="ProfilesPage" Visibility="Collapsed">
-      <TextBlock Text="Spiel hinzufügen" FontSize="18" FontWeight="SemiBold"/><TextBlock Text="Wähle ein laufendes Spiel. Oder erfasse es nach einem kurzen Countdown." Style="{StaticResource MutedText}" Margin="0,8,0,15"/>
-      <ComboBox x:Name="GameWindows" AutomationProperties.Name="Laufende Spielfenster"/><WrapPanel Margin="0,12,0,0"><Button x:Name="RefreshGamesButton" Content="Fenster laden" Margin="0,0,8,0"/><Button x:Name="AddGameButton" Content="Hinzufügen" Style="{StaticResource Primary}" Margin="0,0,8,0"/><Button x:Name="CaptureGameButton" Content="In 5 s erfassen"/></WrapPanel><TextBlock x:Name="CaptureText" Foreground="#ABD0BA" Margin="0,10,0,0"/>
-      <Border Style="{StaticResource Rule}"/>
-      <Grid><TextBlock Text="Gespeicherte Profile" FontSize="18" FontWeight="SemiBold"/><Button x:Name="DeleteProfileButton" Content="Löschen" Style="{StaticResource Quiet}" Foreground="#DDA49D" HorizontalAlignment="Right" MinHeight="30" Padding="8,3"/></Grid>
-      <TextBlock x:Name="NoProfilesText" Text="Noch keine Profile. Füge oben dein erstes Spiel hinzu." Style="{StaticResource MutedText}" Margin="0,16,0,0"/><ComboBox x:Name="EditProfiles" Margin="0,15,0,22" AutomationProperties.Name="Profil bearbeiten"/>
-      <StackPanel x:Name="ProfileEditor"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel Margin="0,0,22,0"><TextBlock Text="Name" Style="{StaticResource Label}"/><TextBox x:Name="ProfileName" AutomationProperties.Name="Profilname"/><TextBlock Text="Bereich" Style="{StaticResource Label}" Margin="0,20,0,8"/><ComboBox x:Name="AreaChoice" AutomationProperties.Name="Sperrbereich"><ComboBoxItem Content="Spielfenster"/><ComboBoxItem Content="Ganzer Monitor"/></ComboBox><TextBlock Text="Monitor" Style="{StaticResource Label}" Margin="0,20,0,8"/><ComboBox x:Name="MonitorChoice" AutomationProperties.Name="Monitor"/></StackPanel>
-      <StackPanel Grid.Column="1"><TextBlock Text="Prozess" Style="{StaticResource Label}"/><TextBox x:Name="ProcessName" IsReadOnly="True" Foreground="#A4A6AF" AutomationProperties.Name="Spielprozess"/><TextBlock x:Name="InsetLabel" Text="Randabstand · 0 px" Style="{StaticResource Label}" Margin="0,20,0,12"/><Slider x:Name="InsetSlider" Minimum="0" Maximum="50" TickFrequency="1" IsSnapToTickEnabled="True" Foreground="#B1B5C1" AutomationProperties.Name="Randabstand in Pixel"/><TextBlock Text="Abstand vom Fensterrand, von 0 bis 50 Pixel." Style="{StaticResource MutedText}" FontSize="11" Margin="0,9,0,0"/><CheckBox x:Name="PipEnabled" Content="PiP-Klickschutz" Margin="0,28,0,5"/><TextBlock Text="Für das auf der Übersicht gewählte Videofenster." Style="{StaticResource MutedText}" FontSize="11"/></StackPanel></Grid>
-      <WrapPanel Margin="0,26,0,0"><Button x:Name="SaveProfileButton" Style="{StaticResource Primary}" Content="Speichern" Margin="0,0,10,0"/></WrapPanel></StackPanel><WrapPanel Margin="0,15,0,0"><Button x:Name="ExportProfilesButton" Content="Exportieren" Margin="0,0,10,0"/><Button x:Name="ImportProfilesButton" Content="Importieren"/></WrapPanel>
-     </StackPanel>
-     <StackPanel x:Name="SettingsPage" Visibility="Collapsed">
-      <TextBlock Text="Tastenkürzel" FontSize="18" FontWeight="SemiBold"/><TextBlock Text="Funktionieren auch im Spiel. Änderungen werden direkt gespeichert." Style="{StaticResource MutedText}" Margin="0,8,0,20"/>
-      <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel Margin="0,0,20,0"><TextBlock Text="Schutz an / aus" Style="{StaticResource Label}"/><ComboBox x:Name="ToggleKeyChoice" AutomationProperties.Name="Tastenkürzel Schutz"><ComboBoxItem Content="Strg + Alt + F8" Tag="F8"/><ComboBoxItem Content="Strg + Alt + F6" Tag="F6"/><ComboBoxItem Content="Strg + Alt + F10" Tag="F10"/></ComboBox></StackPanel><StackPanel Grid.Column="1"><TextBlock Text="30 Sekunden Pause" Style="{StaticResource Label}"/><ComboBox x:Name="PauseKeyChoice" AutomationProperties.Name="Tastenkürzel Pause"><ComboBoxItem Content="Strg + Alt + F9" Tag="F9"/><ComboBoxItem Content="Strg + Alt + F7" Tag="F7"/><ComboBoxItem Content="Strg + Alt + F11" Tag="F11"/></ComboBox></StackPanel></Grid>
-      <TextBlock Text="Die Notfall-Freigabe ist immer Strg + Alt + F12." Style="{StaticResource MutedText}" FontSize="12" Margin="0,15,0,0"/><TextBlock x:Name="HotkeyStatus" Foreground="#A7CFB4" FontSize="12" Margin="0,9,0,0"/>
-      <Border Style="{StaticResource Rule}"/>
-      <TextBlock Text="Automatik" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12"/><CheckBox x:Name="AutoPipSetting" Content="Bild-in-Bild automatisch erkennen"/><CheckBox x:Name="AutoGameSetting" Content="Bekannte Spiele automatisch auswählen"/><TextBlock Text="Neue Videofenster werden auch nach einem Browser-Neustart gefunden." Style="{StaticResource MutedText}" FontSize="12" Margin="0,8,0,0"/><Border Style="{StaticResource Rule}"/><TextBlock Text="Verhalten" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12"/><CheckBox x:Name="TraySetting" Content="Beim Schließen im Infobereich weiterlaufen"/><CheckBox x:Name="StartupSetting" Content="Mit Windows starten"/><CheckBox x:Name="MinimizedSetting" Content="Beim Start direkt in den Infobereich"/><CheckBox x:Name="SoundSetting" Content="Ton beim Umschalten"/><TextBlock Text="Der Schutz ist nach jedem Programmstart zunächst aus." Style="{StaticResource MutedText}" FontSize="12" Margin="0,9,0,0"/>
-      <Border Style="{StaticResource Rule}"/>
-      <TextBlock Text="Lokale Daten" FontSize="18" FontWeight="SemiBold"/><TextBlock x:Name="LifetimeText" Style="{StaticResource MutedText}" Margin="0,10,0,15"/><WrapPanel><Button x:Name="OpenDataButton" Content="Datenordner öffnen" Margin="0,0,10,0"/><Button x:Name="ExitButton" Content="FocusFence beenden"/></WrapPanel>
-     </StackPanel>
-     <StackPanel x:Name="HelpPage" Visibility="Collapsed">
-      <TextBlock Text="Einrichten" FontSize="18" FontWeight="SemiBold"/><TextBlock Text="1. Öffne ein Bild-in-Bild-Video im Browser. FocusFence sucht das Videofenster automatisch.&#x0a;&#x0a;2. Schalte den Schutz ein und wechsle ins Spiel. Bekannte Spiele werden automatisch ausgewählt. Andere Spiele kannst du direkt unter Spiel wählen; ein Profil wird dabei automatisch angelegt.&#x0a;&#x0a;3. Alt+Tab gibt Maus und Video frei. Zurück im Spiel wird der Schutz wieder aktiv.&#x0a;&#x0a;Wenn mehrere Videos offen sind oder ein Fenster nicht erkannt wird, kannst du es unter Bild-in-Bild → Ändern selbst wählen." Style="{StaticResource MutedText}" LineHeight="23" Margin="0,15,0,0"/>
-      <Border Style="{StaticResource Rule}"/>
-      <TextBlock Text="Freigeben" FontSize="18" FontWeight="SemiBold"/><TextBlock Text="Strg + Alt + F9 pausiert für 30 Sekunden. Mit Strg + Alt + F12 schaltest du den Schutz sofort aus. Ein separater Wiederherstellungsprozess gibt die von FocusFence gesetzten Änderungen bei einem unerwarteten Programmende wieder frei." Style="{StaticResource MutedText}" Margin="0,12,0,0"/>
-      <Border Style="{StaticResource Rule}"/>
-      <TextBlock Text="Hinweise" FontSize="18" FontWeight="SemiBold"/><TextBlock Text="Fenster- und randloser Vollbildmodus eignen sich besonders für Bild-in-Bild. Die automatische Erkennung sucht etwa jede Sekunde nach neuen Videofenstern. Bei mehreren Treffern bleibt das bisher gewählte Video erhalten; sonst wählst du eines unter Ändern aus.&#x0a;&#x0a;Manche Browser oder geschützte Spiele erlauben keine fremden Fensteränderungen. Windows kann Zugriffe auf Fenster mit höheren Rechten begrenzen. Fehler erscheinen unten im Status.&#x0a;&#x0a;FocusFence nutzt Windows-Fensterfunktionen und verändert keinen Spielspeicher. Prüfe die Regeln deines Spiels und teste den Schutz vor einer wichtigen Runde." Style="{StaticResource MutedText}" Margin="0,12,0,0"/>
-     </StackPanel>
-   </Grid></ScrollViewer>
-  </Grid>
-  <Border Grid.Row="3" BorderBrush="#34363D" BorderThickness="0,1,0,0" Padding="24,0"><Grid><TextBlock x:Name="FooterStatus" Text="Schutz aus · Maus frei" FontSize="11" Foreground="#A2A7B3" VerticalAlignment="Center" Margin="0,0,230,0"/><StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"><TextBlock Text="Freigeben" FontSize="11" Foreground="#8D94A3" Margin="0,0,12,0"/><Border BorderBrush="#484D59" BorderThickness="1" CornerRadius="4" Padding="7,4"><TextBlock Text="Strg + Alt + F12" FontSize="11" Foreground="#C1C7D3"/></Border></StackPanel><TextBlock x:Name="FooterTime" Visibility="Collapsed"/></Grid></Border>
- </Grid></Border>
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="FocusFence" Width="1000" Height="800" MinWidth="920" MinHeight="760"
+        WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanResize"
+        Background="#141A19" Foreground="#F0F3ED" FontFamily="Segoe UI" FontSize="14"
+        UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
+  <shell:WindowChrome.WindowChrome>
+    <shell:WindowChrome CaptionHeight="48" ResizeBorderThickness="6" CornerRadius="12" GlassFrameThickness="0" />
+  </shell:WindowChrome.WindowChrome>
+  <Window.Resources>
+    <SolidColorBrush x:Key="Accent" Color="#D1EAB3" />
+    <SolidColorBrush x:Key="Muted" Color="#A5B0A9" />
+    <SolidColorBrush x:Key="Line" Color="#34413B" />
+    <Style TargetType="TextBlock">
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style x:Key="MutedText" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+      <Setter Property="Foreground" Value="{StaticResource Muted}" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="LineHeight" Value="20" />
+    </Style>
+    <Style x:Key="Label" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Margin" Value="0,0,0,9" />
+    </Style>
+    <Style x:Key="Rule" TargetType="Border">
+      <Setter Property="Height" Value="1" />
+      <Setter Property="Background" Value="{StaticResource Line}" />
+      <Setter Property="Margin" Value="0,24" />
+    </Style>
+    <Style x:Key="Group" TargetType="Border">
+      <Setter Property="Background" Value="#1B2420" />
+      <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="12" />
+      <Setter Property="Padding" Value="22" />
+    </Style>
+    <Style TargetType="Button">
+      <Setter Property="Background" Value="#26332B" />
+      <Setter Property="Foreground" Value="#E8EDE5" />
+      <Setter Property="BorderBrush" Value="#455448" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Padding" Value="16,11" />
+      <Setter Property="MinHeight" Value="42" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="Surface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7" Padding="{TemplateBinding Padding}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Surface" Property="Opacity" Value="0.8" /></Trigger>
+              <Trigger Property="IsPressed" Value="True"><Setter TargetName="Surface" Property="Opacity" Value="0.6" /></Trigger>
+              <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Surface" Property="Opacity" Value="0.35" /></Trigger>
+              <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Surface" Property="BorderBrush" Value="#F3FFE2" /><Setter TargetName="Surface" Property="BorderThickness" Value="2" /></Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="Primary" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+      <Setter Property="Background" Value="{StaticResource Accent}" />
+      <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+      <Setter Property="Foreground" Value="#202C18" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Padding" Value="22,12" />
+      <Setter Property="MinHeight" Value="46" />
+    </Style>
+    <Style x:Key="Quiet" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+      <Setter Property="Foreground" Value="#C0CBC1" />
+      <Setter Property="Padding" Value="10,8" />
+    </Style>
+    <Style x:Key="Nav" TargetType="Button" BasedOn="{StaticResource Quiet}">
+      <Setter Property="Margin" Value="0,0,25,0" />
+      <Setter Property="Padding" Value="1,10" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Grid>
+              <Border Background="Transparent" Padding="{TemplateBinding Padding}" Margin="0,0,0,3">
+                <ContentPresenter VerticalAlignment="Center" />
+              </Border>
+              <Border x:Name="Underline" Height="2" Background="{StaticResource Accent}" VerticalAlignment="Bottom" Visibility="Collapsed" />
+            </Grid>
+            <ControlTemplate.Triggers>
+              <Trigger Property="Tag" Value="selected"><Setter TargetName="Underline" Property="Visibility" Value="Visible" /></Trigger>
+              <Trigger Property="IsMouseOver" Value="True"><Setter Property="Foreground" Value="#F0F3ED" /></Trigger>
+              <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Underline" Property="Visibility" Value="Visible" /></Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style TargetType="TextBox">
+      <Setter Property="Background" Value="#141D18" /><Setter Property="Foreground" Value="#EDF2E9" />
+      <Setter Property="BorderBrush" Value="#4B5B4E" /><Setter Property="CaretBrush" Value="#D1EAB3" />
+      <Setter Property="Padding" Value="12,11" /><Setter Property="MinHeight" Value="44" />
+      <Setter Property="SelectionBrush" Value="#5D744E" />
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="TextBox">
+        <Border x:Name="Field" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="7" Padding="{TemplateBinding Padding}">
+          <ScrollViewer x:Name="PART_ContentHost" />
+        </Border>
+        <ControlTemplate.Triggers><Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter TargetName="Field" Property="BorderBrush" Value="{StaticResource Accent}" /></Trigger></ControlTemplate.Triggers>
+      </ControlTemplate></Setter.Value></Setter>
+    </Style>
+    <Style TargetType="ComboBox">
+      <Setter Property="Background" Value="#141D18" /><Setter Property="Foreground" Value="#E7EEE0" />
+      <Setter Property="MinHeight" Value="46" /><Setter Property="Tag" Value="Choose an option" />
+      <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ComboBox">
+        <Grid>
+          <ToggleButton x:Name="Toggle" Focusable="False" IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" Background="{TemplateBinding Background}">
+            <ToggleButton.Template><ControlTemplate TargetType="ToggleButton">
+              <Border x:Name="Field" Background="{TemplateBinding Background}" BorderBrush="#4B5B4E" BorderThickness="1" CornerRadius="7">
+                <Path Data="M 0,0 L 4,4 8,0" Stroke="#BDCBB6" StrokeThickness="1.4" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,16,0" />
+              </Border>
+              <ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Field" Property="BorderBrush" Value="#8B9D7D" /></Trigger><Trigger Property="IsChecked" Value="True"><Setter TargetName="Field" Property="BorderBrush" Value="{StaticResource Accent}" /></Trigger></ControlTemplate.Triggers>
+            </ControlTemplate></ToggleButton.Template>
+          </ToggleButton>
+          <TextBlock x:Name="Placeholder" Text="{TemplateBinding Tag}" Foreground="#9AA993" Margin="13,10,38,10" IsHitTestVisible="False" VerticalAlignment="Center" Visibility="Collapsed" />
+          <ContentPresenter Margin="13,10,38,10" VerticalAlignment="Center" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" />
+          <Popup x:Name="PART_Popup" IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" AllowsTransparency="True" Focusable="False">
+            <Border Background="#253024" BorderBrush="#65785A" BorderThickness="1" CornerRadius="8" MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}" MaxHeight="280" MaxWidth="840">
+              <ScrollViewer Margin="5" CanContentScroll="True"><ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" /></ScrollViewer>
+            </Border>
+          </Popup>
+        </Grid>
+        <ControlTemplate.Triggers>
+          <Trigger Property="SelectedIndex" Value="-1"><Setter TargetName="Placeholder" Property="Visibility" Value="Visible" /></Trigger>
+          <Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter TargetName="Toggle" Property="Background" Value="#293B26" /></Trigger>
+          <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.4" /></Trigger>
+        </ControlTemplate.Triggers>
+      </ControlTemplate></Setter.Value></Setter>
+    </Style>
+    <Style TargetType="ComboBoxItem">
+      <Setter Property="Padding" Value="11" /><Setter Property="Foreground" Value="#EDF2E8" />
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ComboBoxItem">
+        <Border x:Name="Row" Background="Transparent" Padding="{TemplateBinding Padding}" CornerRadius="4"><ContentPresenter /></Border>
+        <ControlTemplate.Triggers><Trigger Property="IsHighlighted" Value="True"><Setter TargetName="Row" Property="Background" Value="#405334" /></Trigger><Trigger Property="IsSelected" Value="True"><Setter TargetName="Row" Property="Background" Value="#35462D" /></Trigger></ControlTemplate.Triggers>
+      </ControlTemplate></Setter.Value></Setter>
+    </Style>
+    <Style TargetType="CheckBox">
+      <Setter Property="Foreground" Value="#E0E9D8" /><Setter Property="MinHeight" Value="42" /><Setter Property="Margin" Value="0,6" /><Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="CheckBox">
+        <Grid><Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition Width="52" /></Grid.ColumnDefinitions>
+          <ContentPresenter VerticalAlignment="Center" Margin="0,0,16,0" />
+          <Border x:Name="Track" Grid.Column="1" Width="38" Height="22" CornerRadius="11" Background="#4A5849" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <Ellipse x:Name="Knob" Width="16" Height="16" Fill="#D6DFCD" HorizontalAlignment="Left" Margin="3" />
+          </Border>
+        </Grid>
+        <ControlTemplate.Triggers>
+          <Trigger Property="IsChecked" Value="True"><Setter TargetName="Track" Property="Background" Value="{StaticResource Accent}" /><Setter TargetName="Knob" Property="Fill" Value="#27381C" /><Setter TargetName="Knob" Property="HorizontalAlignment" Value="Right" /></Trigger>
+          <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Track" Property="BorderBrush" Value="White" /><Setter TargetName="Track" Property="BorderThickness" Value="2" /></Trigger>
+          <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.4" /></Trigger>
+        </ControlTemplate.Triggers>
+      </ControlTemplate></Setter.Value></Setter>
+    </Style>
+    <Style TargetType="Slider">
+      <Setter Property="MinHeight" Value="28" />
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Slider">
+        <Grid VerticalAlignment="Center" Height="24">
+          <Track x:Name="PART_Track" Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}" Value="{Binding Value, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+            <Track.DecreaseRepeatButton><RepeatButton Command="{x:Static Slider.DecreaseLarge}" Focusable="False"><RepeatButton.Template><ControlTemplate><Border Height="3" Background="{StaticResource Accent}" CornerRadius="1" /></ControlTemplate></RepeatButton.Template></RepeatButton></Track.DecreaseRepeatButton>
+            <Track.Thumb><Thumb Width="14" Height="14"><Thumb.Template><ControlTemplate><Ellipse Fill="{StaticResource Accent}" /></ControlTemplate></Thumb.Template></Thumb></Track.Thumb>
+            <Track.IncreaseRepeatButton><RepeatButton Command="{x:Static Slider.IncreaseLarge}" Focusable="False"><RepeatButton.Template><ControlTemplate><Border Height="3" Background="#52634A" CornerRadius="1" /></ControlTemplate></RepeatButton.Template></RepeatButton></Track.IncreaseRepeatButton>
+          </Track>
+        </Grid>
+      </ControlTemplate></Setter.Value></Setter>
+    </Style>
+    <Style TargetType="ScrollBar">
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ScrollBar">
+        <Grid Width="8" Background="Transparent"><Track x:Name="PART_Track" IsDirectionReversed="True" Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}" Value="{TemplateBinding Value}" ViewportSize="{TemplateBinding ViewportSize}">
+          <Track.DecreaseRepeatButton><RepeatButton Command="ScrollBar.PageUpCommand" Opacity="0" Focusable="False" /></Track.DecreaseRepeatButton>
+          <Track.Thumb><Thumb><Thumb.Template><ControlTemplate><Border Background="#53684D" CornerRadius="3" Margin="2" /></ControlTemplate></Thumb.Template></Thumb></Track.Thumb>
+          <Track.IncreaseRepeatButton><RepeatButton Command="ScrollBar.PageDownCommand" Opacity="0" Focusable="False" /></Track.IncreaseRepeatButton>
+        </Track></Grid>
+      </ControlTemplate></Setter.Value></Setter>
+    </Style>
+    <Style x:Key="Keycap" TargetType="Border"><Setter Property="BorderBrush" Value="#475442" /><Setter Property="BorderThickness" Value="1" /><Setter Property="CornerRadius" Value="4" /><Setter Property="Padding" Value="8,4" /></Style>
+  </Window.Resources>
+
+  <Border BorderBrush="#3A483D" BorderThickness="1" CornerRadius="12">
+    <Grid>
+      <Grid.RowDefinitions><RowDefinition Height="48" /><RowDefinition Height="52" /><RowDefinition /><RowDefinition Height="44" /></Grid.RowDefinitions>
+      <Grid Margin="26,0,10,0">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+          <Viewbox Width="22" Height="22" Margin="0,0,11,0"><Canvas Width="24" Height="24"><Path Data="M 8,3 L 3,3 3,8 M 16,3 L 21,3 21,8 M 3,16 L 3,21 8,21 M 16,21 L 21,21 21,16" Stroke="#D1EAB3" StrokeThickness="1.7" /><Rectangle Width="4" Height="4" Fill="#D1EAB3" Canvas.Left="10" Canvas.Top="10" /></Canvas></Viewbox>
+          <TextBlock Text="FocusFence" FontSize="15" FontWeight="SemiBold" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+          <Button x:Name="MinimizeButton" Content="—" Style="{StaticResource Quiet}" Width="36" MinHeight="30" Padding="0" AutomationProperties.Name="Minimize" />
+          <Button x:Name="MaximizeButton" Content="□" Style="{StaticResource Quiet}" Width="36" MinHeight="30" Padding="0" AutomationProperties.Name="Maximize or restore" />
+          <Button x:Name="CloseButton" Content="×" FontSize="22" Style="{StaticResource Quiet}" Width="36" MinHeight="30" Padding="0" AutomationProperties.Name="Close" />
+        </StackPanel>
+      </Grid>
+      <Border Grid.Row="1" BorderBrush="#303E33" BorderThickness="0,0,0,1">
+        <StackPanel Orientation="Horizontal" Margin="32,0,32,0">
+          <Button x:Name="NavOverview" Content="Protection" Style="{StaticResource Nav}" />
+          <Button x:Name="NavProfiles" Content="Game profiles" Style="{StaticResource Nav}" />
+          <Button x:Name="NavSettings" Content="Settings" Style="{StaticResource Nav}" />
+          <Button x:Name="NavHelp" Content="Help" Style="{StaticResource Nav}" />
+        </StackPanel>
+      </Border>
+
+      <Grid Grid.Row="2" Margin="32,22,24,16">
+        <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition /></Grid.RowDefinitions>
+        <StackPanel Margin="0,0,0,18">
+          <TextBlock x:Name="PageEyebrow" Visibility="Collapsed" />
+          <TextBlock x:Name="PageTitle" Text="Protection" FontSize="24" FontWeight="SemiBold" />
+          <TextBlock x:Name="PageSubtitle" Text="Keep your mouse where it belongs." Style="{StaticResource MutedText}" Margin="0,7,0,0" />
+        </StackPanel>
+        <ScrollViewer x:Name="PageScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,8,0">
+          <Grid>
+            <StackPanel x:Name="OverviewPage">
+              <Border x:Name="StatusFrame" Background="#202A23" BorderBrush="#43523E" BorderThickness="1" CornerRadius="14" Padding="24,20" MinHeight="143">
+                <Grid>
+                  <Grid.ColumnDefinitions><ColumnDefinition Width="58" /><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                  <Border Width="40" Height="40" Background="#2D3B2A" CornerRadius="12" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,4,0,0">
+                    <Path Data="M 14,3 L 14,13 M 7,6 A 10,10 0 1 0 21,6" Stroke="#D1EAB3" StrokeThickness="1.8" Width="22" Height="24" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                  </Border>
+                  <StackPanel Grid.Column="1" Margin="0,0,22,0">
+                    <StackPanel Orientation="Horizontal"><Ellipse x:Name="StatusDot" Width="6" Height="6" Fill="#94A087" Margin="0,1,7,0" /><TextBlock x:Name="StatusBadge" Text="Off" FontSize="11" Foreground="#BECBB4" /></StackPanel>
+                    <TextBlock x:Name="HeroTitle" Text="Protection is off" FontSize="26" FontWeight="SemiBold" Margin="0,9,0,8" />
+                    <TextBlock x:Name="HeroDescription" Text="Enable protection, then switch to your game." Style="{StaticResource MutedText}" MaxWidth="450" HorizontalAlignment="Left" />
+                  </StackPanel>
+                  <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                    <Button x:Name="ToggleGuardButton" Content="Enable protection" Style="{StaticResource Primary}" MinWidth="178" />
+                    <Button x:Name="PauseButton" Content="Release for 30 seconds" Style="{StaticResource Quiet}" FontSize="12" IsEnabled="False" Margin="0,5,0,0" />
+                  </StackPanel>
+                </Grid>
+              </Border>
+
+              <Grid Margin="0,20,0,10"><TextBlock Text="Your setup" FontWeight="SemiBold" FontSize="14" /><TextBlock x:Name="GameDiscoveryHint" Text="Known games are detected automatically" Style="{StaticResource MutedText}" FontSize="11" HorizontalAlignment="Right" /></Grid>
+              <Border Style="{StaticResource Group}" Padding="22,16">
+                <StackPanel>
+                  <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="55" /><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                    <Border Background="#26352A" CornerRadius="9" Width="36" Height="36" HorizontalAlignment="Left" VerticalAlignment="Center"><Path Data="M 3,3 L 21,3 21,15 3,15 Z M 12,15 L 12,20 M 7,20 L 17,20" Stroke="#C6D6BA" StrokeThickness="1.5" Width="20" Height="20" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                    <StackPanel Grid.Column="1"><TextBlock Text="Game" Style="{StaticResource MutedText}" FontSize="11" Margin="0,0,0,7" /><ComboBox x:Name="DashboardProfiles" Tag="Choose a running game" AutomationProperties.Name="Selected game" /><TextBlock x:Name="BoundsText" Text="Game window" Foreground="#A8B99D" FontSize="12" Margin="0,7,0,0" /></StackPanel>
+                    <Button x:Name="GoProfilesButton" Content="Edit profile" Style="{StaticResource Quiet}" Grid.Column="2" VerticalAlignment="Center" Margin="13,0,0,0" FontSize="12" />
+                  </Grid>
+                  <Border Height="1" Background="#354533" Margin="55,18,0,18" />
+                  <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="55" /><ColumnDefinition /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                    <Grid Width="36" Height="36" HorizontalAlignment="Left" VerticalAlignment="Center"><Border Background="#26352A" CornerRadius="9"><Path Data="M 3,3 L 21,3 21,19 3,19 Z M 11,11 L 21,11 21,19 11,19 Z" Stroke="#C6D6BA" StrokeThickness="1.4" Width="20" Height="18" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border><Ellipse x:Name="PipDot" Width="6" Height="6" Fill="#687A5D" VerticalAlignment="Bottom" HorizontalAlignment="Right" /></Grid>
+                    <StackPanel Grid.Column="1" Margin="0,0,14,0"><TextBlock Text="Picture-in-Picture" Style="{StaticResource MutedText}" FontSize="11" /><TextBlock x:Name="PipWindowTitle" Text="Waiting for a PiP window" FontSize="15" Margin="0,6,0,5" /><TextBlock x:Name="PipHint" Text="Open a floating video in your browser. We'll find it." Style="{StaticResource MutedText}" FontSize="12" /></StackPanel>
+                    <Button x:Name="PipOptionsButton" Content="Change" Grid.Column="2" Style="{StaticResource Quiet}" FontSize="12" VerticalAlignment="Center" />
+                  </Grid>
+                  <StackPanel x:Name="PipManualPanel" Visibility="Collapsed" Margin="55,17,0,0">
+                    <ComboBox x:Name="PipWindows" Tag="Choose a video window" AutomationProperties.Name="Picture-in-Picture window" />
+                    <WrapPanel Margin="0,7,0,0"><Button x:Name="RefreshPipButton" Content="Refresh windows" Style="{StaticResource Quiet}" FontSize="12" /><Button x:Name="AutomaticPipButton" Content="Use automatic detection" Style="{StaticResource Quiet}" FontSize="12" /><Button x:Name="ClearPipButton" Content="Clear selection" Style="{StaticResource Quiet}" FontSize="12" /></WrapPanel>
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+
+              <WrapPanel Margin="0,18,0,0" VerticalAlignment="Center">
+                <TextBlock Text="Toggle" Foreground="#A6B69A" FontSize="11" VerticalAlignment="Center" Margin="0,0,10,0" /><Border Style="{StaticResource Keycap}" Margin="0,0,25,0"><TextBlock x:Name="ToggleHint" Text="Ctrl + Alt + F8" FontSize="11" Foreground="#CCD7C2" /></Border>
+                <TextBlock Text="30-second break" Foreground="#A6B69A" FontSize="11" VerticalAlignment="Center" Margin="0,0,10,0" /><Border Style="{StaticResource Keycap}"><TextBlock x:Name="PauseHint" Text="Ctrl + Alt + F9" FontSize="11" Foreground="#CCD7C2" /></Border>
+              </WrapPanel>
+              <StackPanel Visibility="Collapsed"><TextBlock x:Name="SessionText" /><TextBlock x:Name="BoundsSubtext" /><TextBlock x:Name="PipStatusText" /></StackPanel>
+            </StackPanel>
+
+            <StackPanel x:Name="ProfilesPage" Visibility="Collapsed">
+              <Border Style="{StaticResource Group}"><StackPanel>
+                <TextBlock Text="Add a running game" FontSize="17" FontWeight="SemiBold" />
+                <TextBlock Text="Choose a window below, or switch to your game during a five-second countdown." Style="{StaticResource MutedText}" Margin="0,8,0,16" />
+                <ComboBox x:Name="GameWindows" Tag="Choose a game window" AutomationProperties.Name="Running game windows" />
+                <WrapPanel Margin="0,13,0,0"><Button x:Name="RefreshGamesButton" Content="Refresh windows" Margin="0,0,9,0" /><Button x:Name="AddGameButton" Content="Add game" Style="{StaticResource Primary}" Margin="0,0,9,0" /><Button x:Name="CaptureGameButton" Content="Capture in 5 seconds" /></WrapPanel>
+                <TextBlock x:Name="CaptureText" Foreground="#D1EAB3" Margin="0,10,0,0" />
+              </StackPanel></Border>
+              <Grid Margin="0,25,0,15"><TextBlock Text="Saved profiles" FontSize="17" FontWeight="SemiBold" VerticalAlignment="Center" /><Button x:Name="DeleteProfileButton" Content="Delete profile" Style="{StaticResource Quiet}" Foreground="#E2B2A7" HorizontalAlignment="Right" MinHeight="32" Padding="8,4" FontSize="12" /></Grid>
+              <TextBlock x:Name="NoProfilesText" Text="No profiles yet. Choose a game on the Protection page or add one above." Style="{StaticResource MutedText}" Margin="0,0,0,12" />
+              <ComboBox x:Name="EditProfiles" Margin="0,0,0,20" Tag="Choose a saved profile" AutomationProperties.Name="Profile to edit" />
+              <StackPanel x:Name="ProfileEditor">
+                <Border Style="{StaticResource Group}"><Grid><Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition /></Grid.ColumnDefinitions>
+                  <StackPanel Margin="0,0,24,0"><TextBlock Text="Profile name" Style="{StaticResource Label}" /><TextBox x:Name="ProfileName" AutomationProperties.Name="Profile name" /><TextBlock Text="Confinement area" Style="{StaticResource Label}" Margin="0,20,0,9" /><ComboBox x:Name="AreaChoice" AutomationProperties.Name="Confinement area"><ComboBoxItem Content="Game window" /><ComboBoxItem Content="Entire display" /></ComboBox><TextBlock Text="Display" Style="{StaticResource Label}" Margin="0,20,0,9" /><ComboBox x:Name="MonitorChoice" AutomationProperties.Name="Display" /></StackPanel>
+                  <StackPanel Grid.Column="1"><TextBlock Text="Process" Style="{StaticResource Label}" /><TextBox x:Name="ProcessName" IsReadOnly="True" Foreground="#A7B39D" AutomationProperties.Name="Game process" /><TextBlock x:Name="InsetLabel" Text="Edge inset · 0 px" Style="{StaticResource Label}" Margin="0,20,0,9" /><Slider x:Name="InsetSlider" Minimum="0" Maximum="50" TickFrequency="1" IsSnapToTickEnabled="True" AutomationProperties.Name="Edge inset in pixels" /><TextBlock Text="Keep the cursor up to 50 pixels from the edges." Style="{StaticResource MutedText}" FontSize="11" Margin="0,8,0,13" /><CheckBox x:Name="PipEnabled" Content="PiP click-through" /><TextBlock Text="Applies only while this game is active." Style="{StaticResource MutedText}" FontSize="11" /></StackPanel>
+                </Grid></Border>
+                <Button x:Name="SaveProfileButton" Content="Save changes" Style="{StaticResource Primary}" HorizontalAlignment="Left" Margin="0,17,0,0" />
+              </StackPanel>
+              <WrapPanel Margin="0,18,0,0"><Button x:Name="ExportProfilesButton" Content="Export profiles" Style="{StaticResource Quiet}" Margin="0,0,12,0" /><Button x:Name="ImportProfilesButton" Content="Import profiles" Style="{StaticResource Quiet}" /></WrapPanel>
+            </StackPanel>
+
+            <StackPanel x:Name="SettingsPage" Visibility="Collapsed">
+              <Border Style="{StaticResource Group}"><StackPanel>
+                <TextBlock Text="Automatic detection" FontSize="17" FontWeight="SemiBold" Margin="0,0,0,12" />
+                <CheckBox x:Name="AutoPipSetting" Content="Find Picture-in-Picture windows automatically" />
+                <CheckBox x:Name="AutoGameSetting" Content="Choose known games automatically" />
+                <TextBlock Text="New video windows are found again after a browser restart. Manual choices always take priority." Style="{StaticResource MutedText}" FontSize="12" Margin="0,10,0,0" />
+              </StackPanel></Border>
+              <Border Style="{StaticResource Group}" Margin="0,16,0,0"><StackPanel>
+                <TextBlock Text="Keyboard shortcuts" FontSize="17" FontWeight="SemiBold" Margin="0,0,0,18" />
+                <Grid><Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition /></Grid.ColumnDefinitions>
+                  <StackPanel Margin="0,0,20,0"><TextBlock Text="Toggle protection" Style="{StaticResource Label}" /><ComboBox x:Name="ToggleKeyChoice" AutomationProperties.Name="Toggle protection shortcut"><ComboBoxItem Content="Ctrl + Alt + F8" Tag="F8" /><ComboBoxItem Content="Ctrl + Alt + F6" Tag="F6" /><ComboBoxItem Content="Ctrl + Alt + F10" Tag="F10" /></ComboBox></StackPanel>
+                  <StackPanel Grid.Column="1"><TextBlock Text="30-second break" Style="{StaticResource Label}" /><ComboBox x:Name="PauseKeyChoice" AutomationProperties.Name="Pause shortcut"><ComboBoxItem Content="Ctrl + Alt + F9" Tag="F9" /><ComboBoxItem Content="Ctrl + Alt + F7" Tag="F7" /><ComboBoxItem Content="Ctrl + Alt + F11" Tag="F11" /></ComboBox></StackPanel>
+                </Grid>
+                <TextBlock Text="Emergency release is always Ctrl + Alt + F12." Style="{StaticResource MutedText}" FontSize="12" Margin="0,16,0,0" /><TextBlock x:Name="HotkeyStatus" Foreground="#D1EAB3" FontSize="12" Margin="0,9,0,0" />
+              </StackPanel></Border>
+              <Border Style="{StaticResource Group}" Margin="0,16,0,0"><StackPanel>
+                <TextBlock Text="App behavior" FontSize="17" FontWeight="SemiBold" Margin="0,0,0,12" />
+                <CheckBox x:Name="TraySetting" Content="Keep running in the tray when the window closes" />
+                <CheckBox x:Name="StartupSetting" Content="Start with Windows" />
+                <CheckBox x:Name="MinimizedSetting" Content="Start minimized to the tray" />
+                <CheckBox x:Name="SoundSetting" Content="Play a sound when toggling protection" />
+                <TextBlock Text="Protection always starts off. Changes are saved automatically." Style="{StaticResource MutedText}" FontSize="12" Margin="0,10,0,0" />
+              </StackPanel></Border>
+              <Border Style="{StaticResource Group}" Margin="0,16,0,0"><StackPanel>
+                <TextBlock Text="Your data" FontSize="17" FontWeight="SemiBold" /><TextBlock x:Name="LifetimeText" Style="{StaticResource MutedText}" Margin="0,10,0,16" />
+                <WrapPanel><Button x:Name="OpenDataButton" Content="Open data folder" Margin="0,0,12,0" /><Button x:Name="ExitButton" Content="Quit FocusFence" Style="{StaticResource Quiet}" /></WrapPanel>
+              </StackPanel></Border>
+            </StackPanel>
+
+            <StackPanel x:Name="HelpPage" Visibility="Collapsed">
+              <Border Style="{StaticResource Group}"><StackPanel><TextBlock Text="A quick start" FontSize="17" FontWeight="SemiBold" /><TextBlock Text="1. Open a video in your browser's Picture-in-Picture mode. FocusFence will look for it automatically.&#x0a;&#x0a;2. Enable protection and switch to your game. Known games are detected automatically; other games can be chosen directly on the Protection page.&#x0a;&#x0a;3. Alt+Tab releases the mouse and video controls. Returning to your game restores protection." Style="{StaticResource MutedText}" Margin="0,15,0,0" /></StackPanel></Border>
+              <Border Style="{StaticResource Group}" Margin="0,16,0,0"><StackPanel><TextBlock Text="You're always in control" FontSize="17" FontWeight="SemiBold" /><TextBlock Text="Ctrl + Alt + F9 pauses protection for 30 seconds. Press it again to resume immediately.&#x0a;&#x0a;Ctrl + Alt + F12 turns protection off and releases the mouse and video. A separate recovery companion also attempts to restore changes after an unexpected app exit." Style="{StaticResource MutedText}" Margin="0,15,0,0" /></StackPanel></Border>
+              <Border Style="{StaticResource Group}" Margin="0,16,0,0"><StackPanel><TextBlock Text="If a window isn't detected" FontSize="17" FontWeight="SemiBold" /><TextBlock Text="Use Change next to Picture-in-Picture to choose a window manually. If several videos are open, FocusFence keeps the current choice or asks you to select one.&#x0a;&#x0a;Windowed or borderless games work best. Some browsers and protected games do not allow window changes. Windows can also limit access to apps running with higher privileges.&#x0a;&#x0a;FocusFence uses Windows APIs and does not modify game memory. Check your game's rules and try your setup before an important session." Style="{StaticResource MutedText}" Margin="0,15,0,0" /></StackPanel></Border>
+            </StackPanel>
+          </Grid>
+        </ScrollViewer>
+      </Grid>
+
+      <Border Grid.Row="3" BorderBrush="#303E33" BorderThickness="0,1,0,0" Padding="27,0">
+        <Grid><TextBlock x:Name="FooterStatus" Text="Protection off · Mouse released" Foreground="#9FB094" FontSize="11" VerticalAlignment="Center" Margin="0,0,260,0" />
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"><TextBlock Text="Emergency release" Foreground="#A8BA9B" FontSize="11" VerticalAlignment="Center" Margin="0,0,12,0" /><Border Style="{StaticResource Keycap}" Padding="7,3"><TextBlock Text="Ctrl + Alt + F12" Foreground="#D5E2C8" FontSize="11" /></Border></StackPanel>
+          <TextBlock x:Name="FooterTime" Visibility="Collapsed" />
+        </Grid>
+      </Border>
+    </Grid>
+  </Border>
 </Window>

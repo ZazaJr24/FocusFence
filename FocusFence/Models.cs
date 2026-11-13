@@ -7,7 +7,7 @@ namespace FocusFence
 {
     public class GameProfile
     {
-        public string Name = "Mein Spiel";
+        public string Name = "My game";
         public string ProcessName = "";
         public string Area = "window";
         public string Monitor = "";
@@ -51,7 +51,7 @@ namespace FocusFence
                 if (s.PauseKey != "F9" && s.PauseKey != "F7" && s.PauseKey != "F11") s.PauseKey = "F9";
                 return s;
             }
-            catch (Exception e) { LastWarning = "Einstellungen konnten nicht gelesen werden: " + e.Message; Log(LastWarning); return new Settings(); }
+            catch (Exception e) { LastWarning = "Could not load settings: " + e.Message; Log(LastWarning); return new Settings(); }
         }
         internal static void Validate(GameProfile p)
         {
@@ -69,7 +69,7 @@ namespace FocusFence
         internal static bool Save(Settings settings)
         {
             try { Write(SettingsPath, settings); return true; }
-            catch (Exception e) { LastWarning = "Speichern fehlgeschlagen: " + e.Message; Log(LastWarning); return false; }
+            catch (Exception e) { LastWarning = "Could not save settings: " + e.Message; Log(LastWarning); return false; }
         }
         internal static void Log(string message)
         {

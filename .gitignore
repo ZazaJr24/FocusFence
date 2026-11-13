@@ -12,3 +12,6 @@ dist/
 /.vs/
 *.user
 *.suo
+/.tools/
+/dist-net10/
+/runtime-verification.txt

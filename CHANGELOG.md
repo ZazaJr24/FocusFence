@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.0 — 2026-11-13
+
+- Migrated from .NET Framework 4.8 to .NET 10 (`net10.0-windows`).
+- Self-contained Windows x64 single-file release; no separate runtime installation.
+- Rebuilt the interface with new typography, spacing, controls, navigation and protection states.
+- Translated the full app interface, tray actions, messages and app-owned dialog titles to English.
+- Retained existing settings and profiles, automatic discovery and recovery behavior.
+- Updated Windows CI to build and test with the .NET 10 SDK.
+
 ## 1.2.0 — 2026-11-13
 
 First public release.

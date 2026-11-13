@@ -67,6 +67,18 @@ namespace FocusFence
         [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetClassName(IntPtr hwnd, StringBuilder name, int count);
         [DllImport("user32.dll")] static extern IntPtr GetWindow(IntPtr hwnd, uint command);
         [DllImport("dwmapi.dll")] static extern int DwmGetWindowAttribute(IntPtr hwnd, int attribute, out int value, int size);
+        [DllImport("dwmapi.dll")] static extern int DwmSetWindowAttribute(IntPtr hwnd, int attribute, ref int value, int size);
+
+        internal static void ApplyWindowAppearance(IntPtr hwnd)
+        {
+            int dark = 1;
+            DwmSetWindowAttribute(hwnd, 20, ref dark, sizeof(int));
+            if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000))
+            {
+                int roundCorners = 2;
+                DwmSetWindowAttribute(hwnd, 33, ref roundCorners, sizeof(int));
+            }
+        }
 
         internal static long GetStyle(IntPtr hwnd) { return IntPtr.Size == 8 ? GetLong64(hwnd, -20).ToInt64() : (uint)GetLong32(hwnd, -20); }
         internal static bool SetStyle(IntPtr hwnd, long style)
