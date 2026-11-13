@@ -6,7 +6,7 @@ Eine kompakte Windows-App für .NET Framework 4.8. Sie hält die Maus im Spielbe
 
 ## Starten
 
-`dist\FocusFence.exe` starten. Eine Installation ist nicht nötig. Windows 10/11 und .NET Framework 4.8 werden benötigt. Einstellungen bleiben lokal in `%LOCALAPPDATA%\FocusFence`.
+`FocusFence.exe` aus dem entpackten ZIP starten (im Quellprojekt: `dist\FocusFence.exe`). Eine Installation ist nicht nötig. Windows 10/11 und .NET Framework 4.8 werden benötigt. Einstellungen bleiben lokal in `%LOCALAPPDATA%\FocusFence`.
 
 1. Das Browser-Video als **Bild-in-Bild** öffnen. FocusFence sucht das Videofenster automatisch.
 2. **Einschalten** und ins Spiel wechseln. Bekannte Spiele (z. B. Fortnite, VALORANT und Counter-Strike 2) werden automatisch ausgewählt.
