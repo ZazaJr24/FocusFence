@@ -71,7 +71,7 @@ namespace FocusFence
 
         internal static void ApplyWindowAppearance(IntPtr hwnd)
         {
-            int dark = 1;
+            int dark = 0;
             DwmSetWindowAttribute(hwnd, 20, ref dark, sizeof(int));
             if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000))
             {

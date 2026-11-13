@@ -25,7 +25,8 @@ The app always starts with protection off. Close the tray app via **Quit** to ex
 
 ## Features
 
-- Redesigned interface with custom controls, a clear protection state, connected game/video setup and visible keyboard shortcuts.
+- Light, minimal interface with a central power control, compact navigation and a separate game/video dock.
+- A visible game library and side-by-side profile editor, plus rebuilt preferences and help screens.
 - Automatic detection of typical browser PiP windows, including reacquisition after a browser restart.
 - Known-game detection and saved per-game profiles.
 - Window or monitor confinement, adjustable edge inset, DPI and multi-monitor support.
@@ -38,7 +39,7 @@ Settings and logs stay in `%LOCALAPPDATA%\FocusFence`. Detection does not requir
 
 ## Detection and compatibility
 
-PiP detection is a heuristic based on browser process, native window class, title and window features. It recognizes typical Firefox, Chrome, Edge and other Chromium-based PiP windows, including several localized titles. It does not treat an ordinary browser tab as PiP just because its title mentions the feature. If several videos are open, it retains the current choice or asks you to select one under **Change**. Manual choices take priority over background discovery.
+PiP detection is a heuristic based on browser process, native window class, title and window features. It recognizes typical Firefox, Chrome, Edge and other Chromium-based PiP windows, including several localized titles. It does not treat an ordinary browser tab as PiP just because its title mentions the feature. If several videos are open, it retains the current choice or asks you to **Choose a window**. Manual choices take priority over background discovery.
 
 Not every browser implementation or game permits window changes. Borderless/windowed games are the intended use case. Higher-privilege or protected windows can reject access. Test your game/browser combination before an important session.
 

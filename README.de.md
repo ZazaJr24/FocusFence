@@ -1,4 +1,4 @@
-# FocusFence 2.0
+# FocusFence 3.0
 
 Eine native Windows-App auf .NET 10 mit vollständig englischer Oberfläche. Sie hält die Maus im Spielbereich, erkennt typische Bild-in-Bild-Fenster automatisch und kann Klicks durch das Video an das Spiel weiterreichen.
 
@@ -10,7 +10,7 @@ Eine native Windows-App auf .NET 10 mit vollständig englischer Oberfläche. Sie
 
 1. Das Browser-Video als **Bild-in-Bild** öffnen. FocusFence sucht das Videofenster automatisch.
 2. **Enable protection** anklicken und ins Spiel wechseln. Bekannte Spiele (z. B. Fortnite, VALORANT und Counter-Strike 2) werden automatisch ausgewählt.
-3. Andere Spiele direkt auf der Seite **Protection** im Feld **Game** wählen. Ein Profil wird dabei automatisch gespeichert; zusätzliche Einrichtung ist nicht erforderlich.
+3. Andere Spiele direkt auf der Seite **Focus** im Feld **Game** wählen. Ein Profil wird dabei automatisch gespeichert; zusätzliche Einrichtung ist nicht erforderlich.
 4. **Alt+Tab** gibt Maus und Videobedienung frei. Beim Zurückwechseln greift der Schutz wieder.
 
 | Tastenkürzel | Aktion |
@@ -28,7 +28,8 @@ Die ersten beiden Kürzel sind in den Einstellungen umstellbar. Ist das Notfall-
 - Fensterposition und -größe werden laufend berücksichtigt; physische Koordinaten mit DPI-Unterstützung.
 - Automatische PiP-Erkennung im Hintergrund, einschließlich erneuter Auswahl nach einem Browser-Neustart. Klickschutz nur während des Spielens.
 - Bekannte Spiele und gespeicherte Spielprofile werden automatisch berücksichtigt. Beide Automatiken sind in den Einstellungen abschaltbar.
-- Neu gestaltete, englische Oberfläche mit klaren Zuständen und eigenen Bedienelementen. Manuelle Fensterauswahl bei Bedarf unter **Picture-in-Picture → Change**.
+- Vollständig neues, helles Design in Weiß, Schwarz und dezentem Blau mit zentralem Ein-/Ausschalter und schmaler Navigation. Die Spielebibliothek zeigt gespeicherte Profile direkt als Liste.
+- Manuelle Fensterauswahl bei Bedarf unter **Picture-in-Picture → Choose a window**.
 - Tray-Menü mit Öffnen, Umschalten, Pause, Notfall-Freigabe und Beenden. Standardmäßig läuft die App beim Schließen im Tray weiter.
 - Optionaler Windows-Autostart, Start im Tray und Umschaltton. Autostart ist standardmäßig aus; der Schutz startet immer ausgeschaltet.
 - Profile als XML importieren/exportieren. Vorhandene Prozesse werden beim Import nicht überschrieben.

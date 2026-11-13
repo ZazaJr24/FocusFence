@@ -12,8 +12,8 @@ using System.Windows.Markup;
 [assembly: AssemblyTitle("FocusFence")]
 [assembly: AssemblyDescription("Mouse confinement and Picture-in-Picture protection for games")]
 [assembly: AssemblyCompany("FocusFence")]
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
+[assembly: AssemblyVersion("3.0.0.0")]
+[assembly: AssemblyFileVersion("3.0.0.0")]
 [assembly: SupportedOSPlatform("windows10.0.17763")]
 
 namespace FocusFence

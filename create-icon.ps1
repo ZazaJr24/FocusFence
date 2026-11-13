@@ -4,8 +4,8 @@ $assetRoot = Join-Path $PSScriptRoot 'FocusFence'
 $bitmap = New-Object System.Drawing.Bitmap 256,256
 $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
 $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
-$graphics.Clear([System.Drawing.Color]::FromArgb(20,26,25))
-$mint = [System.Drawing.Color]::FromArgb(209,234,179)
+$graphics.Clear([System.Drawing.Color]::FromArgb(246,246,244))
+$mint = [System.Drawing.Color]::FromArgb(49,92,245)
 $pen = New-Object System.Drawing.Pen $mint,8
 $graphics.DrawLine($pen,54,94,54,54)
 $graphics.DrawLine($pen,54,54,94,54)

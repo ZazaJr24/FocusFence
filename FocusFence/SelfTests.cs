@@ -15,6 +15,13 @@ namespace FocusFence
     {
         private static readonly List<string> results = new List<string>();
         private static void Assert(bool pass, string name) { if (!pass) throw new Exception(name); results.Add("PASS  " + name); }
+        private static bool ContainsText(DependencyObject node, string text)
+        {
+            if (node is TextBlock block && block.Text == text) return true;
+            for (int index = 0; index < System.Windows.Media.VisualTreeHelper.GetChildrenCount(node); index++)
+                if (ContainsText(System.Windows.Media.VisualTreeHelper.GetChild(node, index), text)) return true;
+            return false;
+        }
         // Foreground and confinement are substituted; window geometry and styles use real Win32 windows.
         private sealed class TestCursor : ICursorClip
         {
@@ -198,7 +205,7 @@ namespace FocusFence
                     controller.ApplyDiscovery(new List<WindowInfo> { unlistedGame });
                     var quickPicker = (ComboBox)view.FindName("DashboardProfiles");
                     quickPicker.SelectedItem = quickPicker.Items.Cast<GameProfile>().First(delegate(GameProfile profile) { return profile.ProcessName == "unlisted-game"; });
-                    Assert(((GameProfile)((ComboBox)view.FindName("EditProfiles")).SelectedItem).ProcessName == "unlisted-game", "Home game picker creates and selects a profile in one step");
+                    Assert(((GameProfile)((ListBox)view.FindName("EditProfiles")).SelectedItem).ProcessName == "unlisted-game", "Home game picker creates and selects a profile in one step");
                     ((Button)view.FindName("DeleteProfileButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     ((Button)view.FindName("ToggleGuardButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     Assert((string)((Button)view.FindName("ToggleGuardButton")).Content == "Disable protection", "One-click protection can wait for automatic game detection without prior setup");
@@ -207,6 +214,10 @@ namespace FocusFence
                     var games = (ComboBox)view.FindName("GameWindows"); games.ItemsSource = new[] { game }; games.SelectedIndex = 0;
                     ((Button)view.FindName("AddGameButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     Assert(((StackPanel)view.FindName("ProfileEditor")).Visibility == Visibility.Visible, "Adding native game reveals profile editor");
+                    view.UpdateLayout();
+                    var library = (ListBox)view.FindName("EditProfiles");
+                    var libraryItem = library.ItemContainerGenerator.ContainerFromItem(library.SelectedItem) as ListBoxItem;
+                    Assert(libraryItem != null && ContainsText(libraryItem, ((GameProfile)library.SelectedItem).Name), "Game library displays the selected profile name through its data template");
                     ((TextBox)view.FindName("ProfileName")).Text = "Mein Testspiel";
                     ((Slider)view.FindName("InsetSlider")).Value = 8;
                     ((ComboBox)view.FindName("AreaChoice")).SelectedIndex = 1;

@@ -86,6 +86,7 @@ namespace FocusFence
         private ComboBox Combo(string name) { return Find<ComboBox>(name); }
         private CheckBox Check(string name) { return Find<CheckBox>(name); }
         private TextBox Input(string name) { return Find<TextBox>(name); }
+        private Brush Palette(string name) { return (Brush)window.FindResource(name); }
         private void Click(string name, Action action) { Button(name).Click += delegate { action(); }; }
         private void Wire()
         {
@@ -98,7 +99,7 @@ namespace FocusFence
             Click("GoProfilesButton", delegate { Navigate("Profiles"); RefreshWindows("GameWindows"); });
             Click("RefreshGamesButton", delegate { RefreshWindows("GameWindows"); });
             Click("RefreshPipButton", delegate { RefreshWindows("PipWindows"); });
-            Click("PipOptionsButton", delegate { var panel = Find<StackPanel>("PipManualPanel"); panel.Visibility = panel.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible; if (panel.Visibility == Visibility.Visible) RefreshWindows("PipWindows"); });
+            Click("PipOptionsButton", delegate { var panel = Find<StackPanel>("PipManualPanel"); panel.Visibility = panel.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible; Button("PipOptionsButton").Content = panel.Visibility == Visibility.Visible ? "Done" : "Choose a window"; if (panel.Visibility == Visibility.Visible) RefreshWindows("PipWindows"); });
             Click("AutomaticPipButton", delegate { SetAutoPip(true); Find<StackPanel>("PipManualPanel").Visibility = Visibility.Collapsed; ApplyDiscovery(discovered); RequestDiscovery(); });
             Click("ClearPipButton", delegate { SetAutoPip(false); Combo("PipWindows").SelectedIndex = -1; engine.Pip = null; engine.Tick(); UpdateUi(); });
             Click("AddGameButton", delegate { AddGame(Combo("GameWindows").SelectedItem as WindowInfo); });
@@ -110,7 +111,7 @@ namespace FocusFence
             Click("ExitButton", CloseForReal);
             Click("OpenDataButton", delegate { Directory.CreateDirectory(Storage.Folder); Process.Start("explorer.exe", "\"" + Storage.Folder + "\""); });
             Combo("DashboardProfiles").SelectionChanged += delegate { SelectProfile(Combo("DashboardProfiles")); };
-            Combo("EditProfiles").SelectionChanged += delegate { SelectProfile(Combo("EditProfiles")); };
+            Find<ListBox>("EditProfiles").SelectionChanged += delegate { SelectProfile(Find<ListBox>("EditProfiles")); };
             Combo("PipWindows").SelectionChanged += delegate
             {
                 if (loading) return;
@@ -132,14 +133,14 @@ namespace FocusFence
             {
                 Find<StackPanel>(p + "Page").Visibility = p == page ? Visibility.Visible : Visibility.Collapsed;
                 Button("Nav" + p).Background = Brushes.Transparent;
-                Button("Nav" + p).Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(p == page ? "#EFF4EA" : "#A4B09D"));
+                Button("Nav" + p).Foreground = Palette(p == page ? "Accent" : "Muted");
                 Button("Nav" + p).Tag = p == page ? "selected" : "";
                 Button("Nav" + p).FontWeight = p == page ? FontWeights.SemiBold : FontWeights.Normal;
             }
-            string title = "Protection", sub = "Keep your mouse in the game.";
-            if (page == "Profiles") { title = "Game profiles"; sub = "A saved setup for every game."; }
-            if (page == "Settings") { title = "Settings"; sub = "Make FocusFence work your way."; }
-            if (page == "Help") { title = "Help"; sub = "Get set up and stay in control."; }
+            string title = "Focus mode", sub = "Your mouse stays with your game.";
+            if (page == "Profiles") { title = "Your games"; sub = "Saved settings for each game."; }
+            if (page == "Settings") { title = "Preferences"; sub = "Detection, shortcuts and startup behavior."; }
+            if (page == "Help") { title = "Good to know"; sub = "Setup, shortcuts and troubleshooting."; }
             Text("PageTitle").Text = title; Text("PageSubtitle").Text = sub;
             Find<ScrollViewer>("PageScroll").ScrollToTop();
             Text("PageEyebrow").Text = page == "Overview" ? "FOCUS CONTROL" : page == "Profiles" ? "GAME PROFILES" : page == "Settings" ? "PREFERENCES" : "QUICK START";
@@ -148,17 +149,17 @@ namespace FocusFence
         private void RefreshProfiles()
         {
             bool before = loading; loading = true;
-            Combo("EditProfiles").ItemsSource = null;
-            Combo("EditProfiles").ItemsSource = settings.Profiles;
+            Find<ListBox>("EditProfiles").ItemsSource = null;
+            Find<ListBox>("EditProfiles").ItemsSource = settings.Profiles;
             int index = settings.SelectedProfile;
             if (index < 0 || index >= settings.Profiles.Count) index = settings.Profiles.Count > 0 ? 0 : -1;
             settings.SelectedProfile = index;
-            Combo("EditProfiles").SelectedIndex = index;
+            Find<ListBox>("EditProfiles").SelectedIndex = index;
             engine.ChangeProfile(index >= 0 ? settings.Profiles[index] : null);
             RefreshDashboardChoices();
             loading = before; FillEditor();
         }
-        private void SelectProfile(ComboBox combo)
+        private void SelectProfile(System.Windows.Controls.Primitives.Selector combo)
         {
             if (loading) return;
             AccountTime(); engine.Stop();
@@ -179,7 +180,7 @@ namespace FocusFence
             Button("SaveProfileButton").IsEnabled = p != null; Button("DeleteProfileButton").IsEnabled = p != null;
             Find<StackPanel>("ProfileEditor").Visibility = p == null ? Visibility.Collapsed : Visibility.Visible;
             Text("NoProfilesText").Visibility = p == null ? Visibility.Visible : Visibility.Collapsed;
-            Combo("EditProfiles").Visibility = p == null ? Visibility.Collapsed : Visibility.Visible;
+            Find<ListBox>("EditProfiles").Visibility = p == null ? Visibility.Collapsed : Visibility.Visible;
         }
         private void PopulateMonitors()
         {
@@ -361,16 +362,17 @@ namespace FocusFence
             if (disposed) return;
             bool pause = engine.Armed && engine.PauseUntil > DateTime.UtcNow;
             Text("StatusBadge").Text = engine.Locked ? "Active" : pause ? "Paused" : engine.Armed ? "Ready" : "Off";
-            Find<System.Windows.Shapes.Ellipse>("StatusDot").Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(engine.Locked ? "#A8D9BB" : engine.Armed ? "#D8CCAA" : "#747985"));
-            Text("GameDiscoveryHint").Text = settings.AutoGame ? "Known games are detected automatically" : "Choose a game from the list";
-            Text("HeroTitle").Text = engine.Locked ? "Your mouse is protected" : pause ? "Taking a short break" : engine.Armed ? "Ready for your game" : "Protection is off";
+            Find<System.Windows.Shapes.Ellipse>("StatusDot").Fill = Palette(engine.Locked ? "Positive" : engine.Armed ? "Accent" : "Muted");
+            Text("GameDiscoveryHint").Text = settings.AutoGame ? "Auto-detection is on" : "Manual selection";
+            Text("HeroTitle").Text = engine.Locked ? "Mouse locked to your game." : pause ? "Protection paused." : engine.Armed ? "Ready for your game." : "Your mouse is free.";
             Text("HeroDescription").Text = engine.Locked ? "Alt+Tab releases your mouse and video controls." : pause ? "Resuming in " + Math.Max(0, Math.Ceiling((engine.PauseUntil - DateTime.UtcNow).TotalSeconds)) + " seconds." : engine.Armed ? engine.Profile == null ? "Switch to a game. Known games are detected automatically." : "Switch to " + engine.Profile.Name + "." : "Enable protection, then switch to your game.";
             Button("ToggleGuardButton").Content = engine.Armed ? "Disable protection" : "Enable protection";
+            Text("PowerActionText").Text = (string)Button("ToggleGuardButton").Content;
             Button("PauseButton").IsEnabled = engine.Armed; Button("PauseButton").Content = pause ? "Resume now" : "Release for 30 seconds";
             Button("PauseButton").Visibility = engine.Armed ? Visibility.Visible : Visibility.Hidden;
             Text("ToggleHint").Text = "Ctrl + Alt + " + settings.ToggleKey;
             Text("PauseHint").Text = "Ctrl + Alt + " + settings.PauseKey;
-            Find<Border>("StatusFrame").BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(engine.Locked ? "#8AA771" : "#43523E"));
+            Find<Border>("StatusFrame").BorderBrush = Palette(engine.Armed ? "AccentSoft" : "Line");
             Text("SessionText").Text = FormatTime(engine.SessionSeconds);
             Text("BoundsText").Text = engine.Locked ? engine.CurrentBounds.ToString() : engine.Profile != null && engine.Profile.Area == "monitor" ? "Monitor" : "Game window";
             Text("BoundsText").FontSize = 13;
@@ -378,7 +380,8 @@ namespace FocusFence
             Text("PipStatusText").Text = engine.Pip == null ? "Not selected" : engine.Locked && engine.Profile != null && engine.Profile.PipClickThrough ? "Click-through" : "Ready";
             Text("PipWindowTitle").Text = engine.Pip == null ? settings.AutoPip ? pipCandidateCount > 1 ? pipCandidateCount + " video windows found" : "Waiting for a PiP window" : "Automatic detection is off" : FriendlyBrowser(engine.Pip.ProcessName) + " · " + (settings.AutoPip ? "auto-detected" : "selected manually");
             Text("PipHint").Text = engine.Pip == null ? settings.AutoPip ? pipCandidateCount > 1 ? "Choose the video you want using Change." : "Open a floating video in your browser. We'll find it." : "Choose a window or enable automatic detection." : engine.Locked && engine.Profile != null && engine.Profile.PipClickThrough ? "Clicks pass through the video. Alt+Tab restores its controls." : engine.Profile != null && !engine.Profile.PipClickThrough ? "PiP click-through is disabled for this game profile." : "Click-through turns on when your game is active.";
-            Find<System.Windows.Shapes.Ellipse>("PipDot").Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(engine.Pip == null ? "#62656E" : "#A8D9BB"));
+            Find<System.Windows.Shapes.Ellipse>("PipDot").Fill = Palette(engine.Pip == null ? "Muted" : "Positive");
+            Button("PipOptionsButton").Content = Find<StackPanel>("PipManualPanel").Visibility == Visibility.Visible ? "Done" : engine.Pip == null ? "Choose a window" : "Change window";
             Text("FooterStatus").Text = engine.Status;
             if (tray != null) { tray.Text = "FocusFence · " + (engine.Locked ? "Protected" : engine.Armed ? "Ready" : "Protection off"); trayToggle.Text = engine.Armed ? "Disable protection" : "Enable protection"; }
         }

@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.0.0 — 2026-11-13
+
+- Completely new light interface in white, ink and restrained blue.
+- Central power control with a separate connected-window dock.
+- Compact icon navigation replaces the previous top tabs.
+- Visible game library with a side-by-side profile editor.
+- Rebuilt preferences and help layouts; refined fields, switches, icons and focus states.
+- Long game/window names use ellipsis and reveal the full value in a tooltip.
+- Existing profiles and all .NET 10 protection and detection features are retained.
+
 ## 2.0.0 — 2026-11-13
 
 - Migrated from .NET Framework 4.8 to .NET 10 (`net10.0-windows`).

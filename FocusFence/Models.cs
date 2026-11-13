@@ -7,12 +7,12 @@ namespace FocusFence
 {
     public class GameProfile
     {
-        public string Name = "My game";
-        public string ProcessName = "";
-        public string Area = "window";
-        public string Monitor = "";
-        public int Inset = 0;
-        public bool PipClickThrough = true;
+        public string Name { get; set; } = "My game";
+        public string ProcessName { get; set; } = "";
+        public string Area { get; set; } = "window";
+        public string Monitor { get; set; } = "";
+        public int Inset { get; set; } = 0;
+        public bool PipClickThrough { get; set; } = true;
         public override string ToString() { return Name; }
     }
     public class Settings
