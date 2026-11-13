@@ -1,0 +1,28 @@
+name: Bug report
+description: Report a mouse confinement, PiP or interface problem
+title: "[Bug]: "
+body:
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Windows version, FocusFence version, browser/version and game if relevant
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Optional details
+      description: Remove private information from any screenshots or log excerpts.

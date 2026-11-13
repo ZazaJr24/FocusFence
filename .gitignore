@@ -1,0 +1,14 @@
+dist/
+**/bin/
+**/obj/
+*.tmp
+*.zip
+/preview*.png
+/test-results.txt
+/core-test-results.txt
+/smoke-results.txt
+/discovery-inspection.txt
+/launch/
+/.vs/
+*.user
+*.suo
